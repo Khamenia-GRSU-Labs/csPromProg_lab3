@@ -65,4 +65,36 @@ static class TextProcessor
             sentence.Tokens.RemoveAll(t => t is Word w && stopWords.Contains(w.Value.ToLower()));
         }
     }
+
+    public static SortedDictionary<string, (int TotalCount, SortedSet<int> Lines)> BuildConcordance(Text text)
+    {
+        var concordance = new SortedDictionary<string, (int TotalCount, SortedSet<int> Lines)>(StringComparer.Ordinal);
+
+        int currentLine = 1;
+
+        foreach (var sentence in text.Sentences)
+        {
+            foreach (var token in sentence.Tokens)
+            {
+                if (token is Word word)
+                {
+                    string key = word.Value.ToLower();
+
+                    if (!concordance.TryGetValue(key, out var entry))
+                    {
+                        entry = (0, new SortedSet<int>());
+                    }
+
+                    entry.TotalCount++;
+                    entry.Lines.Add(currentLine);
+                    concordance[key] = entry;
+                }
+                else if (token is NewLine)
+                {
+                    currentLine++;
+                }
+            }
+        }
+        return concordance;
+    }
 }

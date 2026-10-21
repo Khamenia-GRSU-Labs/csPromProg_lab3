@@ -5,6 +5,7 @@ namespace lab3.TextProcessing;
 
 [XmlInclude(typeof(Word))]
 [XmlInclude(typeof(Punctuation))]
+[XmlInclude(typeof(NewLine))]
 public class Token
 {
     public string Value { get; set; } = string.Empty;
@@ -26,6 +27,12 @@ public class Punctuation : Token
     public Punctuation(string value) : base(value) { }
 }
 
+public class NewLine : Token
+{
+    public NewLine() { }
+    public NewLine(string value) : base(value) { }
+}
+
 public class Sentence
 {
     public List<Token> Tokens { get; set; } = [];
@@ -45,10 +52,16 @@ public class Sentence
     public override string ToString()
     {
         StringBuilder sb = new();
+        Token? prevToken = null;
+
         foreach (var token in Tokens)
         {
-            if (token is Word && sb.Length > 0) sb.Append(' ');
+            if (token is Word && prevToken != null && prevToken is not NewLine && sb.Length > 0)
+            {
+                sb.Append(' ');
+            }
             sb.Append(token.Value);
+            prevToken = token;
         }
         return sb.ToString();
     }

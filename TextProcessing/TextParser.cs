@@ -25,19 +25,21 @@ static class TextParser
     private static Sentence ParseSentence(string sentenceStr)
     {
         var sentence = new Sentence();
-        var matches = Regex.Matches(sentenceStr, @"([\p{L}\p{N}]+)|([^\s\p{L}\p{N}])");
+        var matches = Regex.Matches(sentenceStr, @"([\p{L}\p{N}]+)|(\r\n|\r|\n)|([^\s\p{C}\p{L}\p{N}])");
 
         foreach (Match match in matches)
         {
-            if (string.IsNullOrEmpty(match.Value)) continue;
-
-            if (Regex.IsMatch(match.Value, @"^[\p{L}\p{N}]+$"))
+            if (match.Groups[1].Success)
             {
-                sentence.Tokens.Add(new Word(match.Value));
+                sentence.Tokens.Add(new Word(match.Groups[1].Value));
             }
-            else
+            else if (match.Groups[2].Success)
             {
-                sentence.Tokens.Add(new Punctuation(match.Value));
+                sentence.Tokens.Add(new NewLine(match.Groups[2].Value));
+            }
+            else if (match.Groups[3].Success)
+            {
+                sentence.Tokens.Add(new Punctuation(match.Groups[3].Value));
             }
         }
         return sentence;
