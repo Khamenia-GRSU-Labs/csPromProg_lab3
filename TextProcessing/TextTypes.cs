@@ -5,7 +5,7 @@ namespace lab3.TextProcessing;
 
 [XmlInclude(typeof(Word))]
 [XmlInclude(typeof(Punctuation))]
-class Token
+public class Token
 {
     public string Value { get; set; } = string.Empty;
 
@@ -14,19 +14,19 @@ class Token
     public Token(string value) { Value = value; }
 }
 
-class Word : Token
+public class Word : Token
 {
     public Word() { }
     public Word(string value) : base(value) { }
 }
 
-class Punctuation : Token
+public class Punctuation : Token
 {
     public Punctuation() { }
     public Punctuation(string value) : base(value) { }
 }
 
-class Sentence
+public class Sentence
 {
     public List<Token> Tokens { get; set; } = [];
 
@@ -54,7 +54,7 @@ class Sentence
     }
 }
 
-class Text
+public class Text
 {
     public List<Sentence> Sentences { get; set; } = [];
 
