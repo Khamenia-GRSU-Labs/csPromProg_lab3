@@ -49,6 +49,11 @@ class Program
         string exportPath = "text_export.xml";
         XmlHelper.ExportToXml(text, exportPath);
         Console.WriteLine($"Object successfuly exported to {exportPath}");
+        PrintDelim();
+
+        Text OrigText = TextParser.Parse(rawText);
+        var concordance = TextProcessor.BuildConcordance(OrigText);
+        PrintConcordance(concordance);
     }
 
     private static void PrintDelim()
@@ -71,4 +76,23 @@ class Program
         }
         return stopWords;
     }
+
+    private static void PrintConcordance(SortedDictionary<string, (int TotalCount, SortedSet<int> Lines)> concordance)
+        {
+            if (concordance.Count == 0) return;
+
+            int maxWordLength = concordance.Keys.Max(k => k.Length);
+
+            foreach (var kvp in concordance)
+            {
+                string word = kvp.Key;
+                var (totalCount, lines) = kvp.Value;
+                string linesStr = string.Join(" ", lines);
+
+                int dotsCount = Math.Max(1, maxWordLength - word.Length + 4);
+                string dots = new string('.', dotsCount);
+
+                Console.WriteLine($"{word}{dots}{totalCount}: {linesStr}");
+            }
+        }
 }
