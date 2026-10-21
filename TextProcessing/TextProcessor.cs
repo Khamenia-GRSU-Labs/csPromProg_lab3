@@ -65,16 +65,4 @@ static class TextProcessor
             sentence.Tokens.RemoveAll(t => t is Word w && stopWords.Contains(w.Value.ToLower()));
         }
     }
-
-    public static HashSet<string> LoadStopWords(params string[] filePaths)
-    {
-        var stopWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var path in filePaths)
-        {
-            var lines = File.ReadAllLines(path);
-            foreach (var line in lines)
-                stopWords.Add(line.Trim().ToLower());
-        }
-        return stopWords;
-    }
 }
